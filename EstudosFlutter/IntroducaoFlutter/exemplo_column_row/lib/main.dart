@@ -26,10 +26,20 @@ class MainApp extends StatelessWidget {
     
             ],
           ),
-          Text("Linha 3"),
-          ],
+          Text("Linha3"),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 200,
+                    height: 200,
+                    color:Colors.pink,
+                  )
 
-        ),
+                ],
+              ),
+          ],
+      ),
       ),
     );
   }
