@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MainApp());
-}
+import 'views/tela_boas_vindas_view.dart';
+import 'views/tela_cadastro_view.dart';
+import 'views/tela_confirmacao_view.dart';
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
+void main(){
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    initialRoute: "/",
+    routes: {
+      "/": (context)=> TelaBoasVindas(),
+      "/cadastro":(context)=>TelaCadastro(),
+      "/confirmacao":(context)=>TelaConfirmacao()
+    },
+  ));
 }
