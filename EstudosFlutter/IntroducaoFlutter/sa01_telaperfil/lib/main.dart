@@ -53,7 +53,7 @@ class MainApp extends StatelessWidget {
               SizedBox(height: 32),
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly, // vertical
+                mainAxisAlignment: MainAxisAlignment.center, // vertical
                 children: [
                   Container(
                     width: 150,
