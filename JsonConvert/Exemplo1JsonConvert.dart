@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 void main() {
   String json = '''{
                     "usuario": "João",
