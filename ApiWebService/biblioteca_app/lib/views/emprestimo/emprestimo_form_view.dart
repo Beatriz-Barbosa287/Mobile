@@ -71,6 +71,9 @@ class _EmprestimoFormViewState extends State<EmprestimoFormView> {
         await _controller.update(emprestimo);
       } catch (e) {
         // tratar erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erro ao atualizar empréstimo.")),
+        );
       }
       Navigator.pop(context);
       Navigator.pushReplacement(

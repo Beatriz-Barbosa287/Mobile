@@ -75,9 +75,16 @@ class _EmprestimoListViewState extends State<EmprestimoListView> {
       try {
         await _controller.delete(emprestimos.id);
         _load();
-        // mensagem de sucesso
+        // mensagem de confirmação
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Empréstimo excluído com sucesso!")),
+        );
+
       } catch (e) {
         // tratar erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erro ao excluir empréstimo.")),
+        );
       }
     }
   }

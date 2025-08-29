@@ -63,6 +63,9 @@ class _LivroFormViewState extends State<LivroFormView> {
         await _controller.update(livro);
       } catch (e) {
         // tratar erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erro ao atualizar livro.")),
+        );
       }
       Navigator.pop(context);
       Navigator.pushReplacement(

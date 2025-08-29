@@ -73,11 +73,17 @@ class _LivroListViewState extends State<LivroListView> {
 
     if (confirm == true) {
       try {
-        await _controller.delete(livros.id);
+        await _controller.delete(livros.id!);
         _load();
         // mensagem de sucesso
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Livro excluído com sucesso!")),
+        );
       } catch (e) {
         // tratar erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erro ao excluir livro.")),
+        );
       }
     }
   }
