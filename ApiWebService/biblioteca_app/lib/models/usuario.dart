@@ -22,5 +22,5 @@ class Usuario {
       email: json["email"].toString()
     );
 
-  static fromJson(item) {}
+ 
 }
