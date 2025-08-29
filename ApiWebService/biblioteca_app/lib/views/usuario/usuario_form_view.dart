@@ -1,10 +1,13 @@
 import 'package:biblioteca_app/controllers/usuario_controller.dart';
 import 'package:biblioteca_app/models/usuario.dart';
-import 'package:biblioteca_app/views/usuario/usuario_form_view.dart';
+import 'package:biblioteca_app/views/usuario/usuario_list_view.dart';
 import 'package:flutter/material.dart';
 
 class UsuarioFormView extends StatefulWidget {
-  const UsuarioFormView({super.key});
+  //atributo
+  final Usuario? user;
+
+  const UsuarioFormView({super.key, this.user});
 
   @override
   State<UsuarioFormView> createState() => _UsuarioFormViewState();
@@ -12,114 +15,86 @@ class UsuarioFormView extends StatefulWidget {
 
 class _UsuarioFormViewState extends State<UsuarioFormView> {
   //atributos
-  final _controller = UsuarioController(); // chmar os controller 
-  List<Usuario> _usuarios = [];
-  bool _loading = true;
-  List<Usuario> _filtroUsuario = []; //lista para filtrar usuários por algum critério
-  final _buscaField = TextEditingController(); //pegar o texto da busca
+  final _formkey = GlobalKey<FormState>(); // validação do formulário
+  final _controller = UsuarioController();
+  final _nomeField = TextEditingController(); //controla o campo nome
+  final _emailField = TextEditingController(); //controla o campo email
 
   @override
   void initState() {
     super.initState();
-    _load();
-  }
-
-  void _load() async{
-    setState(() => _loading = true,);
-    try {
-      _usuarios = await _controller.fetchAll();
-      _filtroUsuario = _usuarios;
-    } catch (e) {
-      //tratar erro
+    if(widget.user != null){
+      _nomeField.text = widget.user!.nome;
+      _emailField.text = widget.user!.email;
     }
-    setState(() => _loading = false);
   }
 
-  void _filtrar(){
-    final busca = _buscaField.text.toLowerCase();
-    setState(() {
-      _filtroUsuario = _usuarios.where((user) {
-        return user.nome.toLowerCase().contains(busca) || //filtra pelo nome
-        user.email.toLowerCase().contains(busca); //filtra pelo email
-      }).toList(); //converte em lista
-    });
-  }
-
-  void _openForm({Usuario? user}) async { // usuario entra no parametro, mas não é obrigatorio
-    await Navigator.push(context, 
-    MaterialPageRoute(builder: (context)=> UsuarioFormView(user: user,)));
-    _load();
-  }
-
-  void _delete(Usuario user) async{
-    if(user.id == null) return;
-    final confirm = await showDialog<bool>(
-      context: context, 
-      builder: (context)=> AlertDialog(
-        title: Text("Confirma Exclusão"),
-        content: Text("Deseja Realmente Excluir o Usuário ${user.nome}"),
-        actions: [
-          TextButton(onPressed: ()=>
-            Navigator.pop(context, false), child: Text("Cancelar")),
-          TextButton(onPressed: ()=>
-            Navigator.pop(context, true), child: Text("Excluir"))
-        ],
-      ));
-    if(confirm == true){
+  //salvar novo usuario
+  void _save() async{
+    if(_formkey.currentState!.validate()){
+      final user = Usuario(
+        id: DateTime.now().millisecond.toString(), //criar um ID 
+        nome: _nomeField.text.trim(), 
+        email: _emailField.text.trim());
       try {
-        await _controller.delete(user.id!);
-        _load();
-        // mensagem de confirmação
+        await _controller.create(user);
+        //mensagem de criação com sucesso
       } catch (e) {
         //tratar erro
       }
+      Navigator.pop(context);
+      Navigator.pushReplacement(context, 
+      MaterialPageRoute(builder: (context)=> UsuarioListView()));
     }
   }
 
+  //atualizar usuario existente
+  void _update() async{
+    if(_formkey.currentState!.validate()){
+      final user = Usuario(
+        id: widget.user?.id!, //pegar id existente
+        nome: _nomeField.text.trim(), 
+        email: _emailField.text.trim());
+      try {
+        await _controller.update(user);
+        //mensagem de criação com sucesso
+      } catch (e) {
+        //tratar erro
+      }
+      Navigator.pop(context);
+      Navigator.pushReplacement(context, 
+      MaterialPageRoute(builder: (context)=> UsuarioListView()));
+    }
+  }
+
+  //build Tela
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _loading
-      ? Center(child: CircularProgressIndicator(),)
-      : Padding(
+      appBar: AppBar(
+        title: Text(widget.user == null ? "Novo Usuário" : "Editar Usuário"),),
+      body: Padding(
         padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _buscaField,
-              decoration: InputDecoration(labelText: "Pesquisar Usuário"),
-              onChanged: (value) => _filtrar(),
-            ),
-            Divider(),
-            Expanded(child: 
-            ListView.builder(
-              itemCount: _filtroUsuario.length,
-              itemBuilder: (context,index){
-                final user = _filtroUsuario[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(user.nome),
-                    subtitle: Text(user.email),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton( //editar usuário existente
-                          onPressed: ()=>_openForm(user:user), 
-                          icon: Icon(Icons.edit)),
-                        IconButton(
-                          onPressed: ()=>_delete(user) , 
-                          icon: Icon(Icons.delete, color: Colors.red,))
-                      ],
-                    ),
-                  ),
-                );
-              })),
-          ],
-        ),
-        ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openForm(), // abre o formulário sem levar o usuario
-        child: Icon(Icons.add),),
+        child: Form(
+          key: _formkey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _nomeField,
+                decoration: InputDecoration(labelText: "Nome"),
+                validator: (value) => value!.isEmpty ? "Informe o Nome" : null,
+              ),
+              TextFormField(
+                controller: _emailField,
+                decoration: InputDecoration(labelText: "Email"),
+                validator: (value) => value!.isEmpty ? "Informe o Email" : null,
+              ),
+              SizedBox(height: 20,),
+              ElevatedButton(
+                onPressed: widget.user == null ? _save : _update, 
+                child: Text(widget.user == null? "Salvar" : "Atualizar"))
+            ],
+          )),),
     );
   }
 }
