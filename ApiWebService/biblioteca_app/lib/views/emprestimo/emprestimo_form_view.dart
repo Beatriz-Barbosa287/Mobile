@@ -36,13 +36,15 @@ class _EmprestimoFormViewState extends State<EmprestimoFormView> {
 
   void _save() async {
     if (_formKey.currentState!.validate()) {
+      final now = DateTime.now();
+      final devolucao = now.add(Duration(days: 15));
       final emprestimo = Emprestimo(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: null,
         usuarioId: _usuarioIdField.text.trim(),
         livroId: _livroIdField.text.trim(),
-        dataEmprestimo: _dataEmprestimoField.text.trim(),
-        dataDevolucao: _dataDevolucaoField.text.trim(),
-        devolvido: _devolvido,
+        dataEmprestimo: now.toIso8601String(),
+        dataDevolucao: devolucao.toIso8601String(),
+        devolvido: false, // Sempre começa como não devolvido
       );
       try {
         await _controller.create(emprestimo);
@@ -50,10 +52,6 @@ class _EmprestimoFormViewState extends State<EmprestimoFormView> {
         // tratar erro
       }
       Navigator.pop(context);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => EmprestimoListView()),
-      );
     }
   }
 
@@ -87,9 +85,9 @@ class _EmprestimoFormViewState extends State<EmprestimoFormView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.emprestimo == null
-            ? 'Novo Empréstimo'
-            : 'Editar Empréstimo'),
+        title: Text(
+          widget.emprestimo == null ? 'Novo Empréstimo' : 'Editar Empréstimo',
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -109,27 +107,7 @@ class _EmprestimoFormViewState extends State<EmprestimoFormView> {
                 validator: (value) =>
                     value!.isEmpty ? "Informe o ID do livro" : null,
               ),
-              TextFormField(
-                controller: _dataEmprestimoField,
-                decoration: InputDecoration(labelText: "Data de Empréstimo"),
-                validator: (value) =>
-                    value!.isEmpty ? "Informe a data de empréstimo" : null,
-              ),
-              TextFormField(
-                controller: _dataDevolucaoField,
-                decoration: InputDecoration(labelText: "Data de Devolução"),
-                validator: (value) =>
-                    value!.isEmpty ? "Informe a data de devolução" : null,
-              ),
-              SwitchListTile(
-                title: Text("Devolvido"),
-                value: _devolvido,
-                onChanged: (value) {
-                  setState(() {
-                    _devolvido = value;
-                  });
-                },
-              ),
+              // Removido campos de data e switch devolvido
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: widget.emprestimo == null ? _save : _update,

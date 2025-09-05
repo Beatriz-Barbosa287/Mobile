@@ -32,7 +32,7 @@
             "disponivel": true
         }
     ],
-"emprestimos":[
+    "emprestimo":[
         {
             "id":1,
             "usuarioId": 1,

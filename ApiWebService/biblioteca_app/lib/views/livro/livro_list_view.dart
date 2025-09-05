@@ -26,7 +26,7 @@ class _LivroListViewState extends State<LivroListView> {
   void _load() async {
     setState(() => _loading = true);
     try {
-      _livros = await _controller.fetchAll();
+      _livros = (await _controller.fectchAll()).cast<Livro>();
       _filtroLivros = _livros;
     } catch (e) {
       // tratar erro

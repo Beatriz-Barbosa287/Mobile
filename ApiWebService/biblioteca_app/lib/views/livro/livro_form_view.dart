@@ -33,21 +33,22 @@ class _LivroFormViewState extends State<LivroFormView> {
   void _save() async {
     if (_formKey.currentState!.validate()) {
       final livro = Livro(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: null, // Deixe nulo para novo cadastro
         titulo: _tituloField.text.trim(),
         autor: _autorField.text.trim(),
         disponivel: _disponivel,
       );
       try {
         await _controller.create(livro);
+        Navigator.pop(
+          context,
+        ); // Apenas pop, pois ao voltar a lista já recarrega
       } catch (e) {
         // tratar erro
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Erro ao cadastrar livro.")));
       }
-      Navigator.pop(context);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LivroListView()),
-      );
     }
   }
 
@@ -63,9 +64,9 @@ class _LivroFormViewState extends State<LivroFormView> {
         await _controller.update(livro);
       } catch (e) {
         // tratar erro
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Erro ao atualizar livro.")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Erro ao atualizar livro.")));
       }
       Navigator.pop(context);
       Navigator.pushReplacement(
@@ -96,8 +97,7 @@ class _LivroFormViewState extends State<LivroFormView> {
               TextFormField(
                 controller: _autorField,
                 decoration: InputDecoration(labelText: "Autor"),
-                validator: (value) =>
-                    value!.isEmpty ? "Informe o autor" : null,
+                validator: (value) => value!.isEmpty ? "Informe o autor" : null,
               ),
               SwitchListTile(
                 title: Text("Disponível"),

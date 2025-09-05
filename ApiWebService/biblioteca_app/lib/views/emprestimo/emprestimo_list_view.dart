@@ -12,8 +12,8 @@ class EmprestimoListView extends StatefulWidget {
 
 class _EmprestimoListViewState extends State<EmprestimoListView> {
   final _controller = EmprestimoController();
-  List<Emprestimo> _emprestimos = [];
-  List<Emprestimo> _filtroEmprestimos = [];
+  List<Emprestimo> _emprestimo = [];
+  List<Emprestimo> _filtroEmprestimo = [];
   final _buscaField = TextEditingController();
   bool _loading = true;
 
@@ -26,8 +26,8 @@ class _EmprestimoListViewState extends State<EmprestimoListView> {
   void _load() async {
     setState(() => _loading = true);
     try {
-      _emprestimos = await _controller.fetchAll();
-      _filtroEmprestimos = _emprestimos;
+      _emprestimo = await _controller.fetchAll();
+      _filtroEmprestimo = _emprestimo;
     } catch (e) {
       // tratar erro
     }
@@ -37,24 +37,24 @@ class _EmprestimoListViewState extends State<EmprestimoListView> {
   void _filtrar() {
     final busca = _buscaField.text.toLowerCase();
     setState(() {
-      _filtroEmprestimos = _emprestimos.where((e) {
+      _filtroEmprestimo = _emprestimo.where((e) {
         return e.usuarioId.toLowerCase().contains(busca) ||
                e.livroId.toLowerCase().contains(busca);
       }).toList();
     });
   }
 
-  void _openForm({Emprestimo? emprestimos}) async {
+  void _openForm({Emprestimo? emprestimo}) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EmprestimoFormView(emprestimo: emprestimos),
+        builder: (context) => EmprestimoFormView(emprestimo: emprestimo),
       ),
     );
     _load();
   }
 
-  void _delete(Emprestimo emprestimos) async {
+  void _delete(Emprestimo emprestimo) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -73,7 +73,7 @@ class _EmprestimoListViewState extends State<EmprestimoListView> {
 
     if (confirm == true) {
       try {
-        await _controller.delete(emprestimos.id);
+        await _controller.delete(emprestimo.id!);
         _load();
         // mensagem de confirmação
         ScaffoldMessenger.of(context).showSnackBar(
@@ -107,28 +107,28 @@ class _EmprestimoListViewState extends State<EmprestimoListView> {
                   Divider(),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: _filtroEmprestimos.length,
+                      itemCount: _filtroEmprestimo.length,
                       itemBuilder: (context, index) {
-                        final emprestimos = _filtroEmprestimos[index];
+                        final emprestimo = _filtroEmprestimo[index];
                         return Card(
                           child: ListTile(
-                            title: Text("Usuário ID: ${emprestimos.usuarioId}"),
+                            title: Text("Usuário ID: ${emprestimo.usuarioId}"),
                             subtitle: Text(
-                              "Livro ID: ${emprestimos.livroId}\n"
-                              "Data Empréstimo: ${emprestimos.dataEmprestimo}\n"
-                              "Data Devolução: ${emprestimos.dataDevolucao}\n"
-                              "Devolvido: ${emprestimos.devolvido ? 'Sim' : 'Não'}",
+                              "Livro ID: ${emprestimo.livroId}\n"
+                              "Data Empréstimo: ${emprestimo.dataEmprestimo}\n"
+                              "Data Devolução: ${emprestimo.dataDevolucao}\n"
+                              "Devolvido: ${emprestimo.devolvido ? 'Sim' : 'Não'}",
                             ),
                             isThreeLine: true,
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  onPressed: () => _openForm(emprestimos: emprestimos),
+                                  onPressed: () => _openForm(emprestimo: emprestimo),
                                   icon: Icon(Icons.edit),
                                 ),
                                 IconButton(
-                                  onPressed: () => _delete(emprestimos),
+                                  onPressed: () => _delete(emprestimo),
                                   icon: Icon(Icons.delete, color: Colors.red),
                                 ),
                               ],
