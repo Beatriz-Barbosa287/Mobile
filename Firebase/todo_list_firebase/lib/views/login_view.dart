@@ -16,6 +16,7 @@ class _LoginViewState extends State<LoginView> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _emailField = TextEditingController();
   final _senhaField = TextEditingController();
+  bool _ocultarSenha = true;
 
   // ignore: unused_element
   void _signIn() async { // do tipo assíncrona porque faz uma requisição para o firebase
@@ -42,10 +43,17 @@ class _LoginViewState extends State<LoginView> {
           decoration: InputDecoration(labelText: "Email"),
           keyboardType: TextInputType.emailAddress,
           ),
+        //colocar olho para visualização da senha
           TextField(controller: _senhaField,
-          decoration: InputDecoration(labelText: "Senha"),
-          obscureText: true,//oculta a senha quando digitada
-          ),
+             decoration: InputDecoration(
+                labelText: "Senha",
+                suffix: IconButton(
+                  onPressed: ()=>setState(() {
+                    _ocultarSenha = !_ocultarSenha;
+                  }), 
+                  icon: Icon(_ocultarSenha ? Icons.visibility : Icons.visibility_off))),
+                obscureText: _ocultarSenha, // oculta a senha quando digitada
+            ),
           SizedBox(height: 20,),
           ElevatedButton(onPressed: _signIn, child: Text("Login")),
           TextButton(onPressed: () => Navigator.push(context, 
