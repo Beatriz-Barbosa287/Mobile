@@ -22,8 +22,8 @@ class _RegistroViewState extends State<RegistroView  > {
       await _auth.createUserWithEmailAndPassword(
         email: _emailField.text.trim(), 
         password: _senhaField.text);
-      // após o registro , u usuário já é logado no sistema 
-      // AuthView -> Joga ele pra tela de Tarefas
+      // após o registro , usuário já é logado no sistema 
+      // AuthView -> tela de favoritos
       Navigator.pop(context); //Fecha a Tela de Registro
     } on FirebaseAuthException catch (e) { //erro especificos do FirebaseAuth
       ScaffoldMessenger.of(context).showSnackBar(
