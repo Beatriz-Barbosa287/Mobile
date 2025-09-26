@@ -20,7 +20,7 @@ Construir um Aplicativo do Zero - O CineFavorite que permitirá criar uma conte 
     - Editar nota – usuário pode atualizar a avaliação de um filme já favoritado.
     - Remover favoritos – usuário pode excluir filmes da sua galeria.
     - Visualizar galeria pessoal – exibir todos os filmes favoritos do usuário.
-    
+
 - ### Não Funcionais
     - Conversão de JSON da API em objetos internos (Movie)
     - Armazenamento de dados no Firestore (CRUD de favoritos)
@@ -130,3 +130,5 @@ Determinar o Caminho Percorrido pelo Ator para executar uma Ação
     D --> Não --> B
 
 ```
+# Prototipagem
+https://www.figma.com/proto/2oVvCxfIQQQtIIiUwqijln/Untitled?node-id=0-1&t=JKoPliSTenTIQXv8-1
