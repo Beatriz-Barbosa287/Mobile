@@ -11,16 +11,15 @@ void main() async{
   //conectar com o FireBase
   await Firebase.initializeApp();
   
-  runApp(
-    MaterialApp(
-      title: "Cine Favorite",
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        brightness: Brightness.dark,
-      ),
-      home: AuthStream(),
+  runApp(MaterialApp(
+    title: "Cine Favorite",
+    theme: ThemeData(
+      primarySwatch: Colors.orange,
+      brightness: Brightness.dark
     ),
-  );
+    home: AuthStream(),
+  ));
+
 }
 
 class AuthStream extends StatelessWidget {
@@ -28,19 +27,14 @@ class AuthStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      //?permite usuário NULL
-      stream: FirebaseAuth.instance
-          .authStateChanges(), //identifica a mudança de status da auth
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          //se tiver dados, ou seja, se o usuário estiver logado
-          return Favoriteview();
-        } else {
-          //se não tiver dados, ou seja, se o usuário não estiver logado
-          return LoginView();
-        }
-      },
-    );
+    return StreamBuilder<User?>( //permite usuário null
+      stream: FirebaseAuth.instance.authStateChanges(), //identifica a mudança de status da auth 
+      builder: (context, snapshot){
+        //se tiver logado , vai para a tela de Favoritos
+        if(snapshot.hasData){ //verifica se o snapshot tem algum dado
+          return FavoriteView();
+        } //caso não estiver logado
+        return LoginView();
+      });
   }
 }

@@ -11,28 +11,28 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   //atributos
-  final FirebaseAuth _auth = FirebaseAuth.instance; //controlador das ações de autenticação do usuário
   final _emailField = TextEditingController();
   final _senhaField = TextEditingController();
+  final _authController = FirebaseAuth.instance; //controller para manipulação do usuário no firebase auth
+  bool _senhaOculta = true;
 
-
-  //método para fazer o login
-  void _signIn() async{
+  //método
+  void _login() async {
     try {
-      await _auth.signInWithEmailAndPassword( //chama o método de autenticação do controller por email e senha
-        email: _emailField.text.trim(), 
-        password: _senhaField.text);
-      //Verifica se  conseguiu autenticação no fireBase (muda oa status do usuário)
-      // direciona automaticamente para a tela de tarefas (AuthView)
-
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Falha ao Fazer Login: $e"))
+      //solicitar a autenticação do usuário
+      await _authController.signInWithEmailAndPassword(
+        email: _emailField.text.trim(),
+        password: _senhaField.text,
       );
+      //não precisa do Navigator, pois usaremso o StreamBuilder
+      // já faz o direcionamento automático para a tela de tarefas
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Falha ao Fazer Login $e")));
     }
   }
 
-  
   //build da Tela
   @override
   Widget build(BuildContext context) {
@@ -41,31 +41,41 @@ class _LoginViewState extends State<LoginView> {
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailField,
               decoration: InputDecoration(labelText: "Email"),
-              keyboardType: TextInputType.emailAddress, //muda o tipo do teclado para com @ e .com
+              keyboardType: TextInputType.emailAddress,
             ),
-            TextField( 
+            TextField(
               controller: _senhaField,
               decoration: InputDecoration(
                 labelText: "Senha",
-                )
+                suffix: IconButton(
+                  onPressed: () => setState(() {
+                    _senhaOculta =
+                        !_senhaOculta; //inverte o valor da variável booleana
+                  }),
+                  icon: _senhaOculta
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off),
+                ),
+              ),
+              obscureText: _senhaOculta,
             ),
-            SizedBox(height: 20,),
-            ElevatedButton(
-              onPressed: _signIn, 
-              child: Text("Login")),
-            TextButton( //como se fosse um link para enviar a outra tela 
-              onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context)=> RegistroView()) ),
-              child: Text("Não tem uma conta? Registre-se Aqui"))
+            SizedBox(height: 20),
+            ElevatedButton(onPressed: _login, child: Text("Login")),
+            TextButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RegistroView()),
+              ),
+              child: Text("Não tem uma conta? Registre-se"),
+            ),
           ],
-
         ),
-        ),
+      ),
     );
   }
 }
-    
