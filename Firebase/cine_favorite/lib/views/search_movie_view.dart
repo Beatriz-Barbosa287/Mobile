@@ -53,7 +53,7 @@ void _searchMovies() async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(title: Text("Login"), titleTextStyle: TextStyle(decorationColor: Color.fromARGB(255, 172, 84, 255), fontSize: 25),),
+     appBar: AppBar(title: Text("Buscar Filmes"), titleTextStyle: TextStyle(decorationColor: Color.fromARGB(255, 63, 146, 255), fontSize: 25),),
       body: Padding(padding: EdgeInsetsGeometry.all(16),
       child: Column(
         children: [

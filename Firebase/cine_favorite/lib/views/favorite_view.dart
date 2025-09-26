@@ -20,7 +20,7 @@ class _FavoriteViewState extends State<FavoriteView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Filmes Favoritos"),
+        title: const Text("Filmes Favoritos"),titleTextStyle: TextStyle(decorationColor: Color.fromARGB(255, 63, 146, 255), fontSize: 25),
         actions: [
           IconButton(
             onPressed: FirebaseAuth.instance.signOut,
