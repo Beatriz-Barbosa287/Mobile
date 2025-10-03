@@ -132,4 +132,4 @@ graph TD
 
 ```
 # Prototipagem
-https://www.figma.com/proto/2oVvCxfIQQQtIIiUwqijln/Untitled?node-id=0-1&t=JKoPliSTenTIQXv8-1
+https://www.figma.com/proto/2oVvCxfIQQQtIIiUwqijln/Untitled?node-id=0-1&t=laBDY3XdoF7Z3b17-1
