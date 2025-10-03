@@ -49,7 +49,7 @@ class MovieFirestoreController {
         .set(movie.toMap());
   }
 
-  Future<void> removeFavoriteMovie(int movieId) async {
+  Future<void> removeFavoriteMovie(int movieId) async { // açao de deletar 
     await _db
         .collection("usuarios")
         .doc(currentUser!.uid)
