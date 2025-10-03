@@ -27,7 +27,7 @@ class _MapViewState extends State<MapView> {
     });
     try {
       //pegar a localização atual
-      LocationPoints novaMarcacao = await _mapController.getCurrentLocation();
+      LocationPoints novaMarcacao = await _mapController._getcurrentLocation();
       listaPosicoes.add(novaMarcacao);
     } catch (e) {
       _error = e.toString();
