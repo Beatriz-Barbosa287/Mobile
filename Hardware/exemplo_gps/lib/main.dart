@@ -1,8 +1,11 @@
+import 'package:exemplo_gps/clima_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-void main() {
-  runApp(MaterialApp(home: LocationScreen()));
+void main(){
+  runApp(MaterialApp(
+    home: LocationScreen(),
+  ));
 }
 
 class LocationScreen extends StatefulWidget {
@@ -17,52 +20,66 @@ class _LocationScreenState extends State<LocationScreen> {
   String mensagem = "";
 
   //método para Pegar a Localização
-  Future<String> _getLocation() async {
+  Future<String?> _getLocation() async{
     bool serviceEnable;
     LocationPermission permission;
 
     //Teste se o Serviço está ativo
     serviceEnable = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnable) {
-      return Future.error("Serviço de Localização desativado");
+    if(!serviceEnable){
+      return "Serviço de Localização está Desativado";
     }
     permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
+    if(permission ==  LocationPermission.denied){
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error("Permissão negada");
+      if (permission == LocationPermission.denied){
+        return "Permissão de Localização Negada";
       }
     }
-
-    //se localização liberada 
+    // se localização foi liberada
     Position position = await Geolocator.getCurrentPosition();
-    return "Lat: ${position.latitude} - Long: ${position.longitude}";
+    
+    try {
+      final cidade = await ClimaService.getCityWeatherByPosition(position);
+      return "${cidade?["nzame"]} -- ${cidade?["main"]["temp"] - 273}° ";
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("$e"))
+      );
+    }
+    return null;
+    
   }
-  @override 
+
+  @override
   void initState() {
-    //todo: implement initState
+    // TODO: implement initState
     super.initState();
-    //chama o metodo ates de "buildar" a tela 
+    //chama o metodo antes de buildar a tela
+    String result = _getLocation().toString();
     setState(() {
-      mensagem = _getLocation().toString();
+      mensagem = result;
     });
   }
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("GPS -> LOCALIZAÇÃO"),
-      ),
+      appBar: AppBar(title: Text("GPS - Localização"),),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(mensagem),
-            ElevatedButton(onPressed: ()async{
-              setState(() {
-                mensagem = _getLocation().toString();
-              });
-            }, child: Text("Pegar a Localização"))          
+            ElevatedButton(
+              onPressed: () async{
+                String? result = await _getLocation();
+                setState(() {
+                  mensagem = result!;
+                });
+              }, 
+              child: Text("Pegar a Localização"))
           ],
         ),
       ),
