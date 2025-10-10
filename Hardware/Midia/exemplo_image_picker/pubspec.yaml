@@ -1,4 +1,4 @@
-name: exemplo_gps
+name: exemplo_image_picker
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -9,10 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_map: ^8.2.2
-  geolocator: ^14.0.2
-  http: ^1.5.0
-  latlong2: ^0.9.1
+  image_picker: ^1.2.0
 
 dev_dependencies:
   flutter_test:

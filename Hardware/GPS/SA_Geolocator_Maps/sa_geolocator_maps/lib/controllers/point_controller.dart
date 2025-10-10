@@ -2,17 +2,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:sa_geolocator_maps/models/location_points.dart';
 
-class MapController {
+class PointController {
   final DateFormat _formatar = DateFormat("dd/MM/yyyy - HH:mm:ss");
 
   //método para pegar a geolocalização do ponto
-  Future<LocationPoints?> _getcurrentLocation() async {
+  Future<LocationPoints> getcurrentLocation() async {
     //solictar a klocalização atual do dispositivo
     //liberar permissões
     //verificar se o aplicativo possui o serviço de geolocalização habilitado
     bool serviceEnable = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnable) {
-      return null;
+      throw Exception("Sem Acesso ao GPS");
     }
     LocationPermission permission;
     //verificar a permissão de uso do gps
@@ -21,23 +21,21 @@ class MapController {
     if (permission == LocationPermission.denied) {
       // solicitar o acesso a geolocalização
       permission == await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+      if (permission == LocationPermission.denied){
         throw Exception("Permissão Negada de Acesso ao GPS");
       }
     }
-
-    //O ACESSO FOI LIBERADO
-
+    // o acesso foi liberado
     Position position = await Geolocator.getCurrentPosition();
-    //pegar a data e hora e formata no Padrão BR
+    //pegar a data e a hora ( e formata no padrão BR)
     String dataHora = _formatar.format(DateTime.now());
     //criar um OBJ do Model
-    LocationPoints posicaoatual = LocationPoints(
-        latitude: position.latitude,
-        longitude: position.longitude,
-        timeStamp: dataHora);
-
-        //devolde o OBJ 
-        return posicaoatual;
+    LocationPoints posicaoAtual = LocationPoints(
+      latitude: position.latitude, 
+      longitude: position.longitude, 
+      timeStamp: dataHora);
+    
+    //devolve o Obj
+    return posicaoAtual;
   }
 }
