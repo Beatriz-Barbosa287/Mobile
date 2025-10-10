@@ -27,7 +27,7 @@ class _GridImageViewState extends State<GridImageView> {
 
   // Lista de imagens selecionadas/tiradas para exibir no GridView
   final List<GridImageItem> _gridImages = [];
-
+  
   /// Método para capturar imagem usando a câmera do dispositivo
   void _getImageFromCamera() async {
     // Abre a câmera e permite tirar uma foto
